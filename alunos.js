@@ -86,3 +86,57 @@ const editarAluno = (index) => {
 
     editandoIndex = index;
 };
+
+// Relatórios
+const relatorioDiv = document.getElementById("relatorio");
+
+// Listar alunos aprovados
+document.getElementById("btn-aprovados").addEventListener("click", () => {
+    const aprovados = alunos.filter(aluno => aluno.isAprovado());
+    exibirRelatorio("Alunos Aprovados", aprovados.map(aluno => aluno.toString()).join("<br>"));
+});
+
+// Calcular a média das notas
+document.getElementById("btn-media-notas").addEventListener("click", () => {
+    if (alunos.length === 0) return alert("Nenhum aluno cadastrado.");
+    
+    const mediaNotas = alunos.reduce((soma, aluno) => soma + aluno.notaFinal, 0) / alunos.length;
+    exibirRelatorio("Média das Notas", `A média das notas é: ${mediaNotas.toFixed(2)}`);
+});
+
+// Calcular a média das idades
+document.getElementById("btn-media-idades").addEventListener("click", () => {
+    if (alunos.length === 0) return alert("Nenhum aluno cadastrado.");
+
+    const mediaIdades = alunos.reduce((soma, aluno) => soma + parseInt(aluno.idade), 0) / alunos.length;
+    exibirRelatorio("Média das Idades", `A média das idades é: ${mediaIdades.toFixed(1)} anos`);
+});
+
+
+
+// Listar os nomes dos alunos em ordem alfabética
+document.getElementById("btn-ordem-alfabetica").addEventListener("click", () => {
+    const nomesOrdenados = alunos.map(aluno => aluno.nome).sort();
+    exibirRelatorio("Alunos em Ordem Alfabética", nomesOrdenados.join("<br>"));
+});
+
+// Contar alunos por curso
+document.getElementById("btn-contagem-curso").addEventListener("click", () => {
+    let contagemCursos = {};
+
+    alunos.forEach(aluno => {
+        contagemCursos[aluno.curso] = (contagemCursos[aluno.curso] || 0) + 1;
+    });
+
+    let resultado = Object.entries(contagemCursos)
+        .map(([curso, quantidade]) => `${curso}: ${quantidade} aluno(s)`)
+        .join("<br>");
+
+    exibirRelatorio("Quantidade de Alunos por Curso", resultado);
+});
+
+// Exibir relatório na página
+const exibirRelatorio = (titulo, conteudo) => {
+    relatorioDiv.innerHTML = `<h3>${titulo}</h3><p>${conteudo}</p>`;
+};
+
