@@ -1,32 +1,39 @@
 class Aluno {
-    constructor(nome, idade, curso, nota) {
+    constructor(nome, idade, curso, notaFinal) {
         this.nome = nome;
         this.idade = idade;
         this.curso = curso;
-        this.nota = nota;
+        this.notaFinal = parseFloat(notaFinal);
+    }
+
+    // Método que verifica se o aluno foi aprovado
+    isAprovado() {
+        return this.notaFinal >= 7;
+    }
+
+    // Método que retorna os dados do aluno formatados
+    toString() {
+        return `${this.nome}, ${this.idade} anos, Curso: ${this.curso}, Nota: ${this.notaFinal}, Status: ${this.isAprovado() ? "Aprovado" : "Reprovado"}`;
     }
 }
 
-// Array para armazenar os alunos
 let alunos = [];
-let editandoIndex = -1; // Índice do aluno que está sendo editado
+let editandoIndex = -1;
 
-// Referências dos elementos do formulário e da tabela
 const form = document.getElementById("formulario-aluno");
 const tabela = document.getElementById("tabela-alunos");
 
-// Função para atualizar a tabela com os alunos cadastrados
+// Atualiza a tabela de alunos no HTML
 const atualizarTabela = () => {
-    tabela.innerHTML = ""; // Limpa a tabela antes de recriar as linhas
+    tabela.innerHTML = ""; 
 
     alunos.forEach((aluno, index) => {
         let row = tabela.insertRow();
-
         row.innerHTML = `
             <td>${aluno.nome}</td>
             <td>${aluno.idade}</td>
             <td>${aluno.curso}</td>
-            <td>${aluno.nota}</td>
+            <td>${aluno.notaFinal} (${aluno.isAprovado() ? "✅ Aprovado" : "❌ Reprovado"})</td>
             <td>
                 <button onclick="editarAluno(${index})">Editar</button>
                 <button onclick="excluirAluno(${index})">Excluir</button>
@@ -35,42 +42,40 @@ const atualizarTabela = () => {
     });
 };
 
-// Função para cadastrar ou editar aluno
+// Cadastrar ou atualizar aluno
 form.addEventListener("submit", (event) => {
-    event.preventDefault(); // Evita o recarregamento da página
+    event.preventDefault();
 
     const nome = document.getElementById("nome").value;
     const idade = document.getElementById("idade").value;
     const curso = document.getElementById("curso").value;
-    const nota = document.getElementById("nota").value;
+    const notaFinal = document.getElementById("nota").value;
 
     if (editandoIndex === -1) {
-        // Cadastrar novo aluno
-        alunos.push(new Aluno(nome, idade, curso, nota));
+        alunos.push(new Aluno(nome, idade, curso, notaFinal));
     } else {
-        // Atualizar aluno existente
-        alunos[editandoIndex] = new Aluno(nome, idade, curso, nota);
-        editandoIndex = -1; // Reseta o modo de edição
+        alunos[editandoIndex] = new Aluno(nome, idade, curso, notaFinal);
+        editandoIndex = -1;
     }
 
-    form.reset(); // Limpa o formulário
+    form.reset();
     atualizarTabela();
 });
 
-// Função para excluir aluno
+// Excluir aluno
 const excluirAluno = (index) => {
-    alunos.splice(index, 1); // Remove do array
+    alunos.splice(index, 1);
     atualizarTabela();
 };
 
-// Função para editar aluno
+// Editar aluno
 const editarAluno = (index) => {
     const aluno = alunos[index];
 
     document.getElementById("nome").value = aluno.nome;
     document.getElementById("idade").value = aluno.idade;
     document.getElementById("curso").value = aluno.curso;
-    document.getElementById("nota").value = aluno.nota;
+    document.getElementById("nota").value = aluno.notaFinal;
 
-    editandoIndex = index; // Marca qual aluno está sendo editado
+    editandoIndex = index;
 };
