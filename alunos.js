@@ -6,15 +6,10 @@ class Aluno {
         this.notaFinal = parseFloat(notaFinal);
     }
 
-    // Método que verifica se o aluno foi aprovado
-    isAprovado() {
-        return this.notaFinal >= 7;
-    }
+    isAprovado = () => this.notaFinal >= 7;
 
-    // Método que retorna os dados do aluno formatados
-    toString() {
-        return `${this.nome}, ${this.idade} anos, Curso: ${this.curso}, Nota: ${this.notaFinal}, Status: ${this.isAprovado() ? "Aprovado" : "Reprovado"}`;
-    }
+    toString = () => 
+        `${this.nome}, ${this.idade} anos, Curso: ${this.curso}, Nota: ${this.notaFinal}, Status: ${this.isAprovado() ? "Aprovado" : "Reprovado"}`;
 }
 
 let alunos = [];
@@ -23,7 +18,7 @@ let editandoIndex = -1;
 const form = document.getElementById("formulario-aluno");
 const tabela = document.getElementById("tabela-alunos");
 
-// Atualiza a tabela de alunos no HTML
+// Atualizar tabela com arrow function
 const atualizarTabela = () => {
     tabela.innerHTML = ""; 
 
@@ -35,14 +30,23 @@ const atualizarTabela = () => {
             <td>${aluno.curso}</td>
             <td>${aluno.notaFinal} (${aluno.isAprovado() ? "✅ Aprovado" : "❌ Reprovado"})</td>
             <td>
-                <button onclick="editarAluno(${index})">Editar</button>
-                <button onclick="excluirAluno(${index})">Excluir</button>
+                <button class="editar" data-index="${index}">Editar</button>
+                <button class="excluir" data-index="${index}">Excluir</button>
             </td>
         `;
     });
+
+    // Adiciona eventos nos botões dinamicamente
+    document.querySelectorAll(".editar").forEach(btn => 
+        btn.addEventListener("click", (event) => editarAluno(event.target.dataset.index))
+    );
+
+    document.querySelectorAll(".excluir").forEach(btn => 
+        btn.addEventListener("click", (event) => excluirAluno(event.target.dataset.index))
+    );
 };
 
-// Cadastrar ou atualizar aluno
+// Cadastro / Edição com função anônima
 form.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -53,8 +57,10 @@ form.addEventListener("submit", (event) => {
 
     if (editandoIndex === -1) {
         alunos.push(new Aluno(nome, idade, curso, notaFinal));
+        alert("Aluno cadastrado com sucesso!");
     } else {
         alunos[editandoIndex] = new Aluno(nome, idade, curso, notaFinal);
+        alert("Aluno atualizado com sucesso!");
         editandoIndex = -1;
     }
 
@@ -62,13 +68,14 @@ form.addEventListener("submit", (event) => {
     atualizarTabela();
 });
 
-// Excluir aluno
+// Excluir aluno (Arrow Function)
 const excluirAluno = (index) => {
     alunos.splice(index, 1);
+    alert("Aluno excluído!");
     atualizarTabela();
 };
 
-// Editar aluno
+// Editar aluno (Arrow Function)
 const editarAluno = (index) => {
     const aluno = alunos[index];
 
